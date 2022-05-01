@@ -1,6 +1,4 @@
-// ignore_for_file: prefer_const_constructors
-
-import 'dart:js';
+// ignore_for_file: prefer_const_constructors, prefer_const_constructors_in_immutables
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -42,7 +40,6 @@ class _OnBoardingState extends State<OnBoarding> {
                     fontSize: 18,
                     color: Colors.grey,
                   ),
-
                 ),
               ],
             ),
