@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_constructors_in_immutables
+// ignore_for_file: prefer_const_constructors, prefer_const_constructors_in_immutables, avoid_unnecessary_containers
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -14,6 +14,21 @@ class OnBoarding extends StatefulWidget {
 }
 
 class _OnBoardingState extends State<OnBoarding> {
+  int currentIndex = 0;
+  late PageController _controller;
+
+  @override
+  void initState() {
+    _controller = PageController(initialPage: 0);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,6 +36,12 @@ class _OnBoardingState extends State<OnBoarding> {
         children: [
           Expanded(
             child: PageView.builder(
+              controller: _controller,
+              onPageChanged: (int index) {
+                setState(() {
+                  currentIndex = index;
+                });
+              },
               itemCount: contents.length,
               itemBuilder: (_, i) {
                 return Padding(
@@ -37,11 +58,15 @@ class _OnBoardingState extends State<OnBoarding> {
                         ),
                       ),
                       SizedBox(height: 50,),
-                      Text(
-                        contents[i].description,
-                        style: GoogleFonts.roboto(
-                          fontSize: 18,
-                          color: Colors.grey,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Text(
+                          contents[i].description,
+                          style: GoogleFonts.roboto(
+                            fontSize: 20,
+                            color: Colors.grey,
+                          ),
+                          textAlign: TextAlign.center,
                         ),
                       ),
                     ],
@@ -56,7 +81,7 @@ class _OnBoardingState extends State<OnBoarding> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(
                 contents.length,
-                (index) => BuildDot()
+                (index) => buildDot(index, context)
               ),
             ),
           ),
@@ -64,44 +89,42 @@ class _OnBoardingState extends State<OnBoarding> {
           Container(
             height: 60,
             margin: EdgeInsets.all(40),
+            decoration: BoxDecoration(
+              color: Colors.blue,
+              borderRadius: BorderRadius.circular(40)
+            ),
             width: double.infinity,
-            color: Theme.of(context).primaryColor,
+            // color: Theme.of(context).primaryColor,
             child: TextButton(
-              child: Text('Next'),
-              onPressed: (){},
+              child: Text(currentIndex == contents.length - 1 ? "Continue" : "Next"),
+              onPressed: (){
+                if(currentIndex == contents.length - 1) {
+
+                }
+                _controller.nextPage(duration: Duration(milliseconds: 100), curve: Curves.bounceIn,);
+              },
               style: TextButton.styleFrom(
                 primary: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20)
                 )
-
-              )
-             
-             
-              
+              ) 
             ),
           )
         ],
       ),
     );
   }
-}
 
-class BuildDot extends StatelessWidget {
-  const BuildDot({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
+  Container buildDot(int index, BuildContext context) {
     return Container(
-      height: 10,
-      width: 10,
-      margin: EdgeInsets.only(right: 5),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        color: Theme.of(context).primaryColor,
-      ),
-    );
+                height: 10,
+                width: currentIndex == index ? 20 : 10,
+                margin: EdgeInsets.only(right: 5),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: Theme.of(context).primaryColor,
+                ),
+              );
   }
 }
